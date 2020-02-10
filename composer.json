@@ -1,6 +1,6 @@
 {
-    "name": "jorarmarfin/mipaquete",
-    "description": "mi primer paquete",
+    "name": "jorarmarfin/laravel-dspace",
+    "description": "Comunicación con Dspace",
     "type": "library",
     "license": "MIT",
     "authors": [
@@ -18,12 +18,12 @@
     },
     "autoload": {
         "psr-4": {
-            "JorarMarfin\\MiPaquete\\": "src"
+            "JorarMarfin\\LaravelDspace\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "JorarMarfin\\MiPaquete\\Tests\\": "tests"
+            "JorarMarfin\\LaravelDspace\\Tests\\": "tests"
         }
     }
 }

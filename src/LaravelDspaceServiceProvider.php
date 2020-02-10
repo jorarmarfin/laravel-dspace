@@ -1,13 +1,13 @@
 <?php
 
-namespace JorarMarfin\MiPaquete;
+namespace JorarMarfin\LaravelDspace;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
-use JorarMarfin\MiPaquete\Controllers\MainController;
+use JorarMarfin\LaravelDspace\Controllers\MainController;
 
-class MiPaqueteServiceProvider extends ServiceProvider
+class LaravelDspaceServiceProvider extends ServiceProvider
 {
     /**
      * Register services.
@@ -16,14 +16,14 @@ class MiPaqueteServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        App::bind('MiPaquete', function()
+        App::bind('LaravelDspace', function()
         {
             return new MainController;
         });
         App::booting( function()
         {
             $loader = AliasLoader::getInstance();
-            $loader->alias('MiPaquete', 'JorarMarfin\MiPaquete\Facades\MiPaqueteFacade');
+            $loader->alias('LaravelDspace', 'JorarMarfin\LaravelDspace\Facades\LaravelDspaceFacade');
         });
     }
 
