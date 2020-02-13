@@ -25,6 +25,7 @@ class LaravelDspaceServiceProvider extends ServiceProvider
             $loader = AliasLoader::getInstance();
             $loader->alias('LaravelDspace', 'JorarMarfin\LaravelDspace\Facades\LaravelDspaceFacade');
         });
+        $this->loadMigrationsFrom(__DIR__.'/Migrations');
     }
 
     /**
