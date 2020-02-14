@@ -26,6 +26,9 @@ class LaravelDspaceServiceProvider extends ServiceProvider
             $loader->alias('LaravelDspace', 'JorarMarfin\LaravelDspace\Facades\LaravelDspaceFacade');
         });
         $this->loadMigrationsFrom(__DIR__.'/Migrations');
+        $this->publishes([
+            __DIR__.'/Config/dspace.php' => config_path('dspace.php'),
+        ]);
     }
 
     /**
