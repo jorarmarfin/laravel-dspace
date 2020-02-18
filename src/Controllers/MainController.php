@@ -3,9 +3,10 @@
 namespace JorarMarfin\LaravelDspace\Controllers;
 
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use DB;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use JorarMarfin\LaravelDspace\Models\Resources;
 
 class MainController extends Controller
 {
@@ -97,12 +98,12 @@ class MainController extends Controller
     {
         $xml = simplexml_load_file($url);
         foreach ($xml->ListRecords->record as $key => $record) {
-            DB::table('resources')->insert(
-                [
-                    'header' => json_encode($record->header),
-                    'metadata' => json_encode($record->metadata)
-                ]
-            );
+            Resources::create([
+                'header' => $record->header,
+                'metadata' => $record->metadata,
+                'created_at'=>now(),
+                'updated_at'=>now()
+            ]);
         }
     }
 }

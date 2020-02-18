@@ -5,6 +5,7 @@ namespace JorarMarfin\LaravelDspace;
 use Illuminate\Support\Facades\App;
 use Illuminate\Foundation\AliasLoader;
 use Illuminate\Support\ServiceProvider;
+use JorarMarfin\LaravelDspace\Commands\DspaceCommand;
 use JorarMarfin\LaravelDspace\Controllers\MainController;
 
 class LaravelDspaceServiceProvider extends ServiceProvider
@@ -29,6 +30,11 @@ class LaravelDspaceServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/Config/dspace.php' => config_path('dspace.php'),
         ]);
+        if (App::runningInConsole()) {
+            $this->commands([
+                DspaceCommand::class,
+            ]);
+        }
     }
 
     /**
