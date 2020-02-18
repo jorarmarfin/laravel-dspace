@@ -11,7 +11,7 @@ class DspaceCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'dspace:harvest';
+    protected $signature = 'dspace:harvest {--set=} {--from=} {--until=}';
 
     /**
      * The console Harvest register to dspace.
@@ -37,6 +37,10 @@ class DspaceCommand extends Command
      */
     public function handle()
     {
-        echo 'harvest';
+        $data = [];
+        if($this->option('set')) $data['set']=$this->option('set');
+        if($this->option('from')) $data['from']=$this->option('from');
+        if($this->option('until')) $data['until']=$this->option('until');
+        dd($data);
     }
 }
