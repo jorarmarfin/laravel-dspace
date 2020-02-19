@@ -35,12 +35,17 @@ class MainController extends Controller
 
         return $xml;
     }
-    public function Harvest($data)
+    public function Harvest($data,$c=null)
     {
-        $urls = $this->FactoryRoute($data);
+        $factory = $this->FactoryRoute($data);
+        $urls = $factory['urls'];
+        $total = $factory['total'];
         if (array_key_exists('message',$urls)) {
             return $urls['message'];
         }else{
+            // if (condition) {
+            //     # code...
+            // }
             foreach ($urls as $key => $url) {
                 if ($key==0)DB::table('resources')->truncate();
                 $this->InsertData($url);
@@ -75,6 +80,7 @@ class MainController extends Controller
 
         $cnt = 0;
         $xml = simplexml_load_file($url.$cnt);
+        $total = 0;
         if ((string)$xml->error=="No matches for the query") {
             $urls['message']='No hay registros que cosechar';
         } else {
@@ -87,12 +93,16 @@ class MainController extends Controller
                 }else{
                     array_push($urls,$url.$cnt);
                     $registros = $xml->ListRecords->record->count();
+                    $total +=$registros;
                     $cnt += 100;
                 }
             }
         }
 
-        return $urls;
+        return [
+            'urls'=>$urls,
+            'total'=>$total
+        ];
     }
     public function InsertData($url)
     {

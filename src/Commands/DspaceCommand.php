@@ -3,6 +3,7 @@
 namespace JorarMarfin\LaravelDspace\Commands;
 
 use Illuminate\Console\Command;
+use LaravelDspace;
 
 class DspaceCommand extends Command
 {
@@ -41,6 +42,7 @@ class DspaceCommand extends Command
         if($this->option('set')) $data['set']=$this->option('set');
         if($this->option('from')) $data['from']=$this->option('from');
         if($this->option('until')) $data['until']=$this->option('until');
-        dd($data);
+        $data1 = LaravelDspace::Harvest($data);
+        dd($data1);
     }
 }
