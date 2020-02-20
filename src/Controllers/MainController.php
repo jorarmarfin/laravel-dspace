@@ -35,22 +35,45 @@ class MainController extends Controller
 
         return $xml;
     }
-    public function Harvest($data,$c=null)
+    public function Harvest($data)
     {
         $factory = $this->FactoryRoute($data);
-        $urls = $factory['urls'];
-        $total = $factory['total'];
-        if (array_key_exists('message',$urls)) {
+        if (array_key_exists('message',$factory)) {
             return $urls['message'];
         }else{
-            // if (condition) {
-            //     # code...
-            // }
+            $urls = $factory['urls'];
+            $total = $factory['total'];
             foreach ($urls as $key => $url) {
                 if ($key==0)DB::table('resources')->truncate();
                 $this->InsertData($url);
             }
             return 'Registros cosechados';
+        }
+    }
+    public function HarvestCommand($data)
+    {
+        $factory = $this->FactoryRoute($data);
+        if (array_key_exists('message',$factory)) {
+            return $urls['message'];
+        }else{
+            $urls = $factory['urls'];
+            $total = $factory['total'];
+            $bar = $this->output->createProgressBar($total);
+            $bar->start();
+            foreach ($urls as $key => $url) {
+                if ($key==0)DB::table('resources')->truncate();
+                $xml = simplexml_load_file($url);
+                foreach ($xml->ListRecords->record as $key => $record) {
+                    Resources::create([
+                        'header' => $record->header,
+                        'metadata' => $record->metadata,
+                        'created_at'=>now(),
+                        'updated_at'=>now()
+                    ]);
+                    $bar->advance();
+                }
+            }
+            $bar->finish();
         }
     }
     public function FactoryRoute($data)
