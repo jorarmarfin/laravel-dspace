@@ -37,46 +37,16 @@ class MainController extends Controller
     }
     public function Harvest($data)
     {
-        $factory = $this->FactoryRoute($data);
-        if (array_key_exists('message',$factory)) {
+        $dspace = $this->ProcessingData($data);
+        if (array_key_exists('message',$dspace)) {
             return $urls['message'];
         }else{
-            $urls = $factory['urls'];
-            $total = $factory['total'];
-            foreach ($urls as $key => $url) {
-                if ($key==0)DB::table('resources')->truncate();
-                $this->InsertData($url);
-            }
+            $data = $dspace['data'];
+            $this->InsertData($data);
             return 'Registros cosechados';
         }
     }
-    public function HarvestCommand($data)
-    {
-        $factory = $this->FactoryRoute($data);
-        if (array_key_exists('message',$factory)) {
-            return $urls['message'];
-        }else{
-            $urls = $factory['urls'];
-            $total = $factory['total'];
-            $bar = $this->output->createProgressBar($total);
-            $bar->start();
-            foreach ($urls as $key => $url) {
-                if ($key==0)DB::table('resources')->truncate();
-                $xml = simplexml_load_file($url);
-                foreach ($xml->ListRecords->record as $key => $record) {
-                    Resources::create([
-                        'header' => $record->header,
-                        'metadata' => $record->metadata,
-                        'created_at'=>now(),
-                        'updated_at'=>now()
-                    ]);
-                    $bar->advance();
-                }
-            }
-            $bar->finish();
-        }
-    }
-    public function FactoryRoute($data)
+    public function ProcessingData($data)
     {
         $url = config('dspace.url');
         $url .='oai/';
@@ -104,6 +74,7 @@ class MainController extends Controller
         $cnt = 0;
         $xml = simplexml_load_file($url.$cnt);
         $total = 0;
+        $data = [];
         if ((string)$xml->error=="No matches for the query") {
             $urls['message']='No hay registros que cosechar';
         } else {
@@ -115,28 +86,31 @@ class MainController extends Controller
                     $registros = 0;
                 }else{
                     array_push($urls,$url.$cnt);
+                    array_push($data,$xml->ListRecords);
                     $registros = $xml->ListRecords->record->count();
                     $total +=$registros;
                     $cnt += 100;
                 }
             }
         }
-
         return [
             'urls'=>$urls,
-            'total'=>$total
+            'total'=>$total,
+            'data'=> $data
         ];
     }
-    public function InsertData($url)
+    public function InsertData($data)
     {
-        $xml = simplexml_load_file($url);
-        foreach ($xml->ListRecords->record as $key => $record) {
-            Resources::create([
-                'header' => $record->header,
-                'metadata' => $record->metadata,
-                'created_at'=>now(),
-                'updated_at'=>now()
-            ]);
+        DB::table('resources')->truncate();
+        foreach ($data as $key => $xml) {
+            foreach ($xml->record as $key => $record) {
+                Resources::create([
+                    'header' => $record->header,
+                    'metadata' => $record->metadata,
+                    'created_at'=>now(),
+                    'updated_at'=>now()
+                ]);
+            }
         }
     }
 }
