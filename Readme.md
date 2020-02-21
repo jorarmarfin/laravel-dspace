@@ -66,8 +66,10 @@ To gather information from dspace we must know the nomenclature of oai-pmh
 ### Methods
 * getData : return data format json
 * Harvest : retriv data to table resource, no acepta el parametro verb, por defecto cosecha del metadataPrefix etdms, but you can send this value to harvest from another metadataPrefix, also accepts the from and until parameters to harvest by dates
-## Commands
-
+## Example Command
+```bash
+dspace:harvest --set=com_11283_320273 --form=2020-02-02 --until=2020-02-02
+```
 ### Examples
 ```php
 use LaravelDspace;
@@ -78,14 +80,4 @@ public function index()
     $data1 = LaravelDspace::Harvest(['set'=>'com_11283_320273']);
     return $data;
 }
-```
-## Examples
-```
-https://infohub.practicalaction.org/oai/request?verb=ListRecords&resumptionToken=oai_dc///com_11283_320273/0
-```
-Search for date
-```
-https://infohub.practicalaction.org/oai/request?verb=ListRecords&from=2020-02-12&until=2020-02-13&set=com_11283_320273&metadataPrefix=oai_dc
-
-https://infohub.practicalaction.org/oai/request?verb=ListRecords&resumptionToken=oai_dc/2019-01-01T00:00:00Z/2019-12-30T00:00:00Z/com_11283_320273/100
 ```
